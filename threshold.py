@@ -2,9 +2,9 @@ import cv2
 import numpy as np 
 import glob
 
-all_ims = sorted(glob.glob('./29-09-23/bag1/*'))
+all_ims = sorted(glob.glob('../../docking_data/fb/bag2/*'))
 #in_ims = ['./bag2/2609230925231227.jpg','./bag2/2609230925160057.jpg','./bag2/2609230925160057.jpg', './bag2/2609230925231227.jpg', './bag2/2609230925243286.jpg', './bag2/2609230925264219.jpg','./bag2/2609230925228746.jpg','./bag2/2609230925243286.jpg']
-in_im = all_ims[147]#'./bag2/2609230925264219.jpg'#'./bag2/2609230925160057.jpg'
+in_im = all_ims[50]#'./bag2/2609230925264219.jpg'#'./bag2/2609230925160057.jpg'
 
 image = cv2.imread(in_im)
 image = cv2.resize(image, (0,0), fx=0.6, fy=0.6, interpolation=cv2.INTER_AREA)

@@ -1,10 +1,8 @@
 # ros node to start on boot. Opens the serial line. Reads position data from floatyboat + log flag ($ASVPD, long, lat, heading, depth, log_flag, log_name)
-# Writes serial img_info, class, log_flag, log_name
-# Subscribes to class, img_info
-# Publishes position data, log_flag, log_name, serial string (for debugging)
+# Writes serial rangerbot angle from usb_cam
 #
 # Written by:   Serena Mou
-# Date:         18th August 2022
+# Date:         29th September 2023
 
 import numpy as np
 import serial
@@ -56,8 +54,7 @@ class serialInOut():
         filler = str('')
         NMEA_0 = 'RBHED'
         
-        write_str = '%s,%s,%s,%s,%s,%s,%s,%s,%s' % (NMEA_0,rb_angle, pix_from_bottom, area, filler, filler, filler, filler, filler) 
-    
+        write_str = '%s,%s,%s,%s' % (NMEA_0,rb_angle, pix_from_bottom, area) 
         self.pub_serial.publish(write_str)
         print(write_str) 
 

@@ -7,19 +7,20 @@ screen -S core -p 0 -X stuff 'roscore\n'
 
 screen -dmS usb_cam -s /bin/bash
 sleep 2
-screen -S usb_cam -p 0 -X stuff 'cd ~/docking/docking_code\n'
+screen -S usb_cam -p 0 -X stuff 'cd ~/serena_repos/rb_docking\n'
 screen -S usb_cam -p 0 -X stuff 'source ~/.bashrc\n'
 screen -S usb_cam -p 0 -X stuff 'source ~/catkin_ws/devel/setup.bash\n' 
 screen -S usb_cam -p 0 -X stuff 'python3 usb_cam.py\n' 
 
 screen -dmS dock -s /bin/bash 
-screen -S dock -p 0 -X stuff 'cd ~/docking/docking_code\n' 
+sleep 2
+screen -S dock -p 0 -X stuff 'cd ~/serena_repos/rb_docking\n' 
 screen -S dock -p 0 -X stuff 'source ~/.bashrc\n' 
 screen -S dock -p 0 -X stuff 'source ~/catkin_ws/devel/setup.bash\n' 
 screen -S dock -p 0 -X stuff 'python3 rb_docking.py\n' 
 
 screen -dmS serial -s /bin/bash 
-screen -S serial -p 0 -X stuff 'cd ~/docking/docking_code\n' 
+screen -S serial -p 0 -X stuff 'cd ~/serena_repos/rb_docking\n' 
 screen -S serial -p 0 -X stuff 'source ~/.bashrc\n' 
 screen -S serial -p 0 -X stuff 'source ~/catkin_ws/devel/setup.bash\n' 
 screen -S serial -p 0 -X stuff 'python3 rb_angle_serial.py\n'

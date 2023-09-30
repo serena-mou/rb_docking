@@ -6,9 +6,6 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 import datetime
 
-Hz = 4
-prev_time = datetime.datetime.now()
-
 
 class usb_cam():
     def __init__(self):
@@ -23,15 +20,17 @@ class usb_cam():
         self.pub_scaled = rospy.Publisher('/usb_cam/scaled', Image, queue_size=5)
         print('publishing to /usb_cam/image')
         self.pub_rb_status = rospy.Publisher('/usb_cam/rb_status', String, queue_size=5)
+        self.Hz = 5
+        self.prev_time = datetime.datetime.now()
     
     def get_image(self):
         ret, frame = self.cap.read()
         if frame is not None:
             curr_time = datetime.datetime.now()
-            time_diff = curr_time-prev_time
-            if time_diff.total_seconds() < 1/Hz:
+            time_diff = curr_time-self.prev_time
+            if time_diff.total_seconds() < 1/self.Hz:
                 return
-            prev_time = curr_time
+            self.prev_time = curr_time
             
             full =self.bridge.cv2_to_imgmsg(frame, 'bgr8') 
             scaled =self.bridge.cv2_to_imgmsg(cv2.resize(frame, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA),'bgr8') 

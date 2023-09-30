@@ -15,25 +15,28 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 
 
-
-
 class RBAngle():
     def __init__(self):
+        print('init')
         self.sub_usb_im = rospy.Subscriber('/usb_cam/image', Image, self.callback, queue_size=1)
         self.pub = rospy.Publisher('/rb_info', String, queue_size=5)
         self.pub_im = rospy.Publisher('/rb_info/image', Image, queue_size=5)
+        self.pub_im_scaled = rospy.Publisher('/rb_info/image_scaled', Image, queue_size=5)
         self.bridge = CvBridge()
         
         self.full_fov = 80 #degrees       
         self.img_scale = 0.5
 
         self.SHOW = False
-        self.angle = None
-        self.pix_from_bottom = None
-
     def callback(self, im):
         # get the subscribed image and convert to cv2
+        angle = -1
+        pix_from_bottom = -1
+
+ 
         image_cv = self.bridge.imgmsg_to_cv2(im, desired_encoding='passthrough')
+        
+        print('got image')
         bgr_im = cv2.resize(image_cv, (0,0), fx=self.img_scale, fy=self.img_scale, interpolation=cv2.INTER_AREA)
         hsv_im = cv2.cvtColor(bgr_im, cv2.COLOR_BGR2HSV)
            
@@ -59,7 +62,7 @@ class RBAngle():
         rb_contour = [None]
 
         _, rb_contours, _ = cv2.findContours(rongy, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        max_rb_contour = 0
+        max_rb_contour = -1
         for con in rb_contours:
             area = cv2.contourArea(con)
             if area>max_rb_contour and area > 400:
@@ -72,18 +75,19 @@ class RBAngle():
             cX = int(M["m10"] / M["m00"])
             cY = int(M["m01"] / M["m00"])
 
-            self.angle = round((cX - 480)/12,2)
-            self.pix_from_bottom = int(540-cY)
-            cv2.putText(bgr_im, "angle: "+str(self.angle)+" deg", (250,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0),2)
+            angle = round((cX - 480)/12,2)
+            pix_from_bottom = int(540-cY)
+            cv2.putText(bgr_im, "angle: "+str(angle)+" deg", (250,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0),2)
 
-            cv2.putText(bgr_im, "pix from bottom: "+str(self.pix_from_bottom), (500,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0),2)
+            cv2.putText(bgr_im, "pix from bottom: "+str(pix_from_bottom), (500,20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0),2)
             
             cv2.drawContours(bgr_im, rb_contour, -1, (255,0,0),3)
             cv2.circle(bgr_im, (cX, cY), 3, (0,0,255), -1)
         
-        pub_str = '%s,%s,%s' % (str(self.angle), str(self.pix_from_bottom), str(max_rb_contour))
+        pub_str = '%s,%s,%s' % (str(angle), str(pix_from_bottom), str(max_rb_contour))
         self.pub.publish(pub_str)
         self.pub_im.publish(self.bridge.cv2_to_imgmsg(bgr_im, 'bgr8'))
+        self.pub_im_scaled.publish(self.bridge.cv2_to_imgmsg(cv2.resize(bgr_im,(0,0),fx=0.4,fy=0.4), 'bgr8'))
         
         if self.SHOW:
             while(1):

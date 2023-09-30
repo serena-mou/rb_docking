@@ -3,13 +3,13 @@ import numpy as np
 import glob
 
 
-images = sorted(glob.glob('./29-09-23/bag1/*'))
+images = sorted(glob.glob('../../docking_data/fb/bag2/*'))
 
 #fb_boxes = []
 #big_contours = []
 print(len(images))
 for i, im in enumerate(images): 
-    if i < 270:
+    if i < 50:
         continue
     full_fov = 80 #degrees
 
