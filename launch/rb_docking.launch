@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<launch>
+  <node 
+    name="rb_cam" 
+    pkg="rb_docking" 
+    type="usb_cam.py" 
+    output="screen"/>
+
+
+  <node 
+    name="rb_serial" 
+    pkg="rb_docking" 
+    type="rb_angle_serial.py" 
+    output="screen"/>
+
+
+  <node 
+    name="rb_CV" 
+    pkg="rb_docking" 
+    type="rb_docking.py" 
+    output="screen"/>
+
+
+
+
+</launch>

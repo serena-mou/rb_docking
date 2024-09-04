@@ -1,3 +1,4 @@
+# click on img, show bgr values
 # importing the module
 import cv2
 import glob

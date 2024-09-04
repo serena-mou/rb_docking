@@ -1,0 +1,13 @@
+<package format="2">
+
+  <name>rb_docking</name>
+  <version>0.0.0</version>
+  <description>
+  This package provides ros scripts for docking Rangerbot into Floatyboat
+  </description>
+  <maintainer email="ya.mou@qut.edu.au">Serena Mou</maintainer>
+  <license>TODO</license>
+
+
+
+</package>

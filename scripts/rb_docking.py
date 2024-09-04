@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Subscribe to the mounted usb-cam on FB frame
 # Find RB if it is in frame and publish the angle at which the RB is relative to the FB
 # Publish /rb_info in the format angle, pix from bottom, area
@@ -39,7 +41,8 @@ class RBAngle():
         print('got image')
         bgr_im = cv2.resize(image_cv, (0,0), fx=self.img_scale, fy=self.img_scale, interpolation=cv2.INTER_AREA)
         hsv_im = cv2.cvtColor(bgr_im, cv2.COLOR_BGR2HSV)
-        
+
+        # left and right floatyboat arm mask out box 
 
         #xl,yl,wl,hl = 0,130,290,410 #x,y,w,h
         #xr,yr,wr,hr = 670,130,290,410 #x,y,w,h
@@ -53,6 +56,7 @@ class RBAngle():
         hsv_im[yr:yr+hr,xr:xr+wr] = np.zeros(right_roi.shape) 
            
         horizon = (540,0)
+        # HSV values for yellow/RB
         rongy_hsv = [(14,52,102),(48,255,255)]
         rongy = cv2.inRange(hsv_im, rongy_hsv[0], rongy_hsv[1])
         rongy[0:horizon[0]][0:horizon[1]]=0

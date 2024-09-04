@@ -1,3 +1,6 @@
+## Look at images from extracted bag, view HSV thresholded
+## View Camshift results
+
 import numpy as np
 import cv2 as cv
 import glob

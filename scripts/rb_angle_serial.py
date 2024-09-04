@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # ros node to start on boot. Opens the serial line. Reads position data from floatyboat + log flag ($ASVPD, long, lat, heading, depth, log_flag, log_name)
 # Writes serial rangerbot angle from usb_cam
 #
