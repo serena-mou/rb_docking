@@ -19,7 +19,7 @@ from cv_bridge import CvBridge
 
 class RBAngle():
     def __init__(self):
-        print('init')
+        rospy.loginfo('init RB CV node')
         self.sub_usb_im = rospy.Subscriber('/usb_cam/image', Image, self.callback, queue_size=1)
         self.pub = rospy.Publisher('/rb_info', String, queue_size=5)
         self.pub_im = rospy.Publisher('/rb_info/image', Image, queue_size=5)
@@ -38,7 +38,7 @@ class RBAngle():
  
         image_cv = self.bridge.imgmsg_to_cv2(im, desired_encoding='passthrough')
         
-        print('got image')
+        #print('got image')
         bgr_im = cv2.resize(image_cv, (0,0), fx=self.img_scale, fy=self.img_scale, interpolation=cv2.INTER_AREA)
         hsv_im = cv2.cvtColor(bgr_im, cv2.COLOR_BGR2HSV)
 
@@ -69,7 +69,7 @@ class RBAngle():
         
         rb_contour = [None]
 
-        _, rb_contours, _ = cv2.findContours(rongy, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        rb_contours, _ = cv2.findContours(rongy, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
         max_rb_contour = -1
         for con in rb_contours:
             area = cv2.contourArea(con)
@@ -113,7 +113,7 @@ def main():
     try:
         rospy.spin()
     except (KeyboardInterrupt, SystemExit):
-        print("shutting down rb angle node")
+        rospy.loginfo("shutting down rb angle node")
     cv2.destroyAllWindows()
 
 

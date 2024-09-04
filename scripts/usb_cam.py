@@ -20,8 +20,6 @@ class usb_cam():
         self.bridge = CvBridge()
         self.pub = rospy.Publisher('/usb_cam/image', Image, queue_size=5)
         self.pub_scaled = rospy.Publisher('/usb_cam/scaled', Image, queue_size=5)
-        print('publishing to /usb_cam/image')
-        self.pub_rb_status = rospy.Publisher('/usb_cam/rb_status', String, queue_size=5)
         self.Hz = 5
         self.prev_time = datetime.datetime.now()
     
@@ -38,20 +36,18 @@ class usb_cam():
             scaled =self.bridge.cv2_to_imgmsg(cv2.resize(frame, None, fx=0.2, fy=0.2, interpolation=cv2.INTER_AREA),'bgr8') 
             self.pub.publish(full)
             self.pub_scaled.publish(scaled)
-            self.pub_rb_status.publish('RB_STATUS_HERE')
-
+            rospy.loginfo("RB docking usb_cam publishing")
         #frame = cv2.resize(frame, None, fx=0.5, fy=0.5, interpolation=cv2.INTER_AREA)
         #cv2.imshow('Input', frame)
         #c = cv2.waitKey(0)
 
 if __name__ == '__main__':
-    rospy.init_node("usb_cam", anonymous=True, disable_signals=True)
     node = usb_cam()
+    rospy.init_node("usb_cam", anonymous=True, disable_signals=True)
     try:
-        print('usb cam node started')
         while True:
             node.get_image()
-    
-    except KeyboardInterrupt:
+    except (KeyboardInterrupt, SystemExit):
+        rospy.loginfo("RB docking USB_cam node killed")
         print('Killed')
         pass

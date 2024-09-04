@@ -14,8 +14,9 @@ import datetime
 import cv2
 import time
 import csv
-import threading
-import queue
+import multiprocessing
+# import threading
+# import queue
 
 import rospy
 import std_msgs.msg
@@ -40,7 +41,7 @@ class serialInOut():
         #set up serial in
         while(True):
             pd_line = ser.readline()
-            print("serial in",pd_line)
+            rospy.loginfo("serial in: %s"%str(pd_line))
             if str(pd_line[0:6]) == "b'$ASVPD'" and pd_line[-2:] == "\r\n".encode('utf-8'):
                 self.line = pd_line
                 #self.callback()#readQueue.put(pd_line)
@@ -58,7 +59,7 @@ class serialInOut():
         
         write_str = '%s,%s,%s,%s' % (NMEA_0,rb_angle, pix_from_bottom, area) 
         self.pub_serial.publish(write_str)
-        print(write_str) 
+        # rospy.loginfo("serial out", write_str) 
 
         crc = 0
         for c in write_str:
@@ -66,20 +67,21 @@ class serialInOut():
         crc = crc & 0xFF
         write_bytes = '$%s*%0.2X\r\n' % (write_str, crc)
         write_bytes = write_bytes.encode('utf-8')
-        print("serial out", write_bytes)
+        rospy.loginfo("serial out: %s"%str(write_bytes))
         self.ser.write(write_bytes)
 
 
 def main():
     s_io = serialInOut()
-    readQueue = queue.Queue()
-    thread = threading.Thread(target=s_io.read_serial, args=(s_io.ser,readQueue))
+    readQueue = multiprocessing.Queue()
+    thread = multiprocessing.Process(target=s_io.read_serial, args=(s_io.ser,readQueue))
     rospy.init_node("serialInOut", disable_signals=True)
     try:
         thread.start()
         rospy.spin()
     except (KeyboardInterrupt, SystemExit):
         s_io.ser.close()
+        thread.terminate()
         print("shutting down serial/ROS node")
     cv2.destroyAllWindows()
     
