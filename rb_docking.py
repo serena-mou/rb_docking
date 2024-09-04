@@ -39,17 +39,21 @@ class RBAngle():
         print('got image')
         bgr_im = cv2.resize(image_cv, (0,0), fx=self.img_scale, fy=self.img_scale, interpolation=cv2.INTER_AREA)
         hsv_im = cv2.cvtColor(bgr_im, cv2.COLOR_BGR2HSV)
-           
-        xl,yl,wl,hl = 0,130,290,410 #x,y,w,h
-        xr,yr,wr,hr = 670,130,290,410 #x,y,w,h
- 
+        
+
+        #xl,yl,wl,hl = 0,130,290,410 #x,y,w,h
+        #xr,yr,wr,hr = 670,130,290,410 #x,y,w,h
+
+        xl,yl,wl,hl = 0,174,226,366 #x,y,w,h
+        xr,yr,wr,hr = 737,174,226,366, #x,y,w,h
+        area_threshold = 360
         left_roi = hsv_im[yl:yl+hl,xl:xl+wl] 
         right_roi = hsv_im[yr:yr+hr,xr:xr+wr]
         hsv_im[yl:yl+hl,xl:xl+wl] = np.zeros(left_roi.shape)  
         hsv_im[yr:yr+hr,xr:xr+wr] = np.zeros(right_roi.shape) 
            
-        horizon = (540,40)
-        rongy_hsv = [(12,26,175),(33,255,255)]
+        horizon = (540,0)
+        rongy_hsv = [(14,52,102),(48,255,255)]
         rongy = cv2.inRange(hsv_im, rongy_hsv[0], rongy_hsv[1])
         rongy[0:horizon[0]][0:horizon[1]]=0
        
@@ -65,7 +69,7 @@ class RBAngle():
         max_rb_contour = -1
         for con in rb_contours:
             area = cv2.contourArea(con)
-            if area>max_rb_contour and area > 400:
+            if area>max_rb_contour and area > area_threshold:
                 max_area = area
                 rb_contour[0] = con
                 max_rb_contour = area
